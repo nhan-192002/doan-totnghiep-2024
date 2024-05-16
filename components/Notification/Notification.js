@@ -24,10 +24,27 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { windowHeight, windowWidth } from "../utils/Dimentions";
 import { TouchableOpacity } from "react-native";
 import UserController from "../../controller/UserController";
+import { auth, firebase, app, firebaseConfig } from "../../firebase";
+
+
+import axios from 'axios';
 
 const Notification = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [findName, setFindName] = useState(null);
+
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.post("http://10.0.0.1:8083/get_recommend_user_uid", {
+        uid: auth.currentUser?.uid
+      });
+      setSuggestedUsers(response.data.suggested_users);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const findUser = () => {
     UserController.findUserByName(findName)
@@ -48,6 +65,12 @@ const Notification = ({ navigation }) => {
         backgroundColor: "#fff",
       }}
     >
+    <View>
+        <Text style={styles.suggestedUsersTitle}>Danh sách người dùng được gợi ý:</Text>
+        {suggestedUsers.map((user, index) => (
+          <Text key={index}>{index}{user}</Text>
+        ))}
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           onChangeText={(Findname) => setFindName(Findname)}
@@ -58,7 +81,9 @@ const Notification = ({ navigation }) => {
         />
         <TouchableOpacity
           style={styles.iconStyle}
-          onPress={() => findUser(findName)}
+          // onPress={() => findUser(findName)}
+          onPress={() => fetchData()}
+
         >
           <Ionicons name="search-outline" color="#666" size={25} />
         </TouchableOpacity>
