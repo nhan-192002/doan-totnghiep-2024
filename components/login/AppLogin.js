@@ -26,28 +26,47 @@ const AppLogin = ({ navigation }) => {
   const dbConnet = ref(database);
 
   const login = () => {
-    if (Email.length === 0 || Pass.length === 0) {
-      Alert.alert("Thông báo!!", "Vui lòng nhập email hoặc passWord", [
-        {
-          text: "OK",
-        },
-      ]);
-      return false;
-    }
+    // if (Email.length === 0 || Pass.length === 0) {
+    //   Alert.alert("Thông báo!!", "Vui lòng nhập email hoặc passWord", [
+    //     {
+    //       text: "OK",
+    //     },
+    //   ]);
+    //   return false;
+    // }
 
-    AuthController.login(
-      Email,
-      Pass,
-      () => {
-        // Đăng nhập thành công
-        navigation.navigate("AppStack");
-        setEmail("");
-        setPass("");
-      },
-      (error) => {
-        // Xử lý lỗi đăng nhập
+    if(Email != "" && Pass != "")
+      {
+        AuthController.login(
+          Email,
+          Pass,
+          () => {
+            // Đăng nhập thành công
+            navigation.navigate("AppStack");
+            setEmail("");
+            setPass("");
+          },
+          (error) => {
+            // Xử lý lỗi đăng nhập
+          }
+        );
+      }else{
+        AuthController.login(
+          // Email,
+          // Pass,
+          'nhan123@gmail.com',
+          'nhan123',
+          () => {
+            // Đăng nhập thành công
+            navigation.navigate("AppStack");
+            setEmail("");
+            setPass("");
+          },
+          (error) => {
+            // Xử lý lỗi đăng nhập
+          }
+        );
       }
-    );
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -26,25 +26,183 @@ import { TouchableOpacity } from "react-native";
 import UserController from "../../controller/UserController";
 import { auth, firebase, app, firebaseConfig } from "../../firebase";
 
-
-import axios from 'axios';
+import axios from "axios";
 
 const Notification = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [findName, setFindName] = useState(null);
 
   const [suggestedUsers, setSuggestedUsers] = useState([]);
+  const [userDetails, setUserDetails] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+    // console.log(suggestedUsers);
+  }, []);
+
+  useEffect(() => {
+    if (suggestedUsers.length > 0) {
+      fetchUserDetails(suggestedUsers);
+    }
+    console.log(userDetails);
+  }, [suggestedUsers]);
 
   const fetchData = async () => {
     try {
-      const response = await axios.post("http://10.0.0.1:8083/get_recommend_user_uid", {
-        uid: auth.currentUser?.uid
-      });
+      const response = await axios.post(
+        "http://10.0.0.1:8083/get_recommend_user_uid",
+        {
+          uid: auth.currentUser?.uid,
+        }
+      );
       setSuggestedUsers(response.data.suggested_users);
     } catch (error) {
       console.error(error);
     }
   };
+
+  // const fetchUserDetails = async (userIds) => {
+  //   try {
+  //     // Lấy uid của người dùng hiện tại
+  //     const currentUserUid = firebase.auth().currentUser.uid;
+
+  //     // Lọc bỏ uid của người dùng hiện tại ra khỏi danh sách userIds
+  //     const filteredUserIds = userIds.filter(
+  //       (userId) => userId !== currentUserUid
+  //     );
+
+  //     // Truy vấn cơ sở dữ liệu Firebase để lấy tài liệu của người dùng hiện tại
+  //     const userDocRef = firebase
+  //       .firestore()
+  //       .collection("NewUser")
+  //       .doc(currentUserUid);
+  //     const userDocSnapshot = await userDocRef.get();
+
+  //     if (userDocSnapshot.exists) {
+  //       const userData = userDocSnapshot.data();
+
+  //       // Lấy danh sách các id của người dùng mà người dùng hiện tại đang theo dõi từ trường "follow" của tài liệu người dùng
+  //       const followedUserIds = userData.follow || [];
+
+  //       // Lọc danh sách userIds để chỉ chứa những id chưa được người dùng theo dõi
+  //       const filteredUserIds = userIds.filter(
+  //         (userId) => !followedUserIds.includes(userId)
+  //       );
+
+  //       // Lấy thông tin chi tiết của các người dùng chưa được theo dõi
+  //       const userDetailsArray = await Promise.all(
+  //         filteredUserIds.map(async (userId) => {
+  //           const userDocRef = firebase
+  //             .firestore()
+  //             .collection("NewUser")
+  //             .doc(userId);
+  //           const userDocSnapshot = await userDocRef.get();
+  //           if (userDocSnapshot.exists) {
+  //             const userData = userDocSnapshot.data();
+  //             return {
+  //               id: userId,
+  //               name: userData.name,
+  //               email: userData.email,
+  //               userImg: userData.userImg,
+  //             };
+  //           } else {
+  //             console.log("No such document for user:", userId);
+  //             return null;
+  //           }
+  //         })
+  //       );
+
+  //       // Lọc bỏ các giá trị null ra khỏi mảng chi tiết người dùng
+  //       const filteredUserDetails = userDetailsArray.filter(
+  //         (user) => user !== null
+  //       );
+  //       setUserDetails(filteredUserDetails);
+  //     } else {
+  //       console.log("No user document found for current user.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching user details:", error);
+  //   }
+  // };
+
+  const fetchUserDetails = async (userIds) => {
+    try {
+      // Lấy uid của người dùng hiện tại
+      const currentUserUid = firebase.auth().currentUser.uid;
+
+      // Lọc bỏ uid của người dùng hiện tại ra khỏi danh sách userIds
+      const filteredUserIds = userIds.filter(
+        (userId) => userId !== currentUserUid
+      );
+
+      // Truy vấn cơ sở dữ liệu Firebase để lấy tài liệu của người dùng hiện tại
+      const userDocRef = firebase
+        .firestore()
+        .collection("NewUser")
+        .doc(currentUserUid);
+      const userDocSnapshot = await userDocRef.get();
+
+      if (userDocSnapshot.exists) {
+        const userData = userDocSnapshot.data();
+
+        // Lấy danh sách các id của người dùng mà người dùng hiện tại đang theo dõi từ trường "follow" của tài liệu người dùng
+        const followedUserIds = userData.follow || [];
+
+        // Lọc danh sách userIds để chỉ chứa những id chưa được người dùng theo dõi
+        const filteredUserIds = userIds.filter(
+          (userId) => !followedUserIds.includes(userId)
+        );
+
+        // Lấy thông tin chi tiết của các người dùng chưa được theo dõi
+        const userDetailsArray = await Promise.all(
+          filteredUserIds.map(async (userId) => {
+            const userDocRef = firebase
+              .firestore()
+              .collection("NewUser")
+              .doc(userId);
+            const userDocSnapshot = await userDocRef.get();
+            if (userDocSnapshot.exists) {
+              const userData = userDocSnapshot.data();
+              return {
+                id: userId,
+                name: userData.name,
+                email: userData.email,
+                userImg: userData.userImg,
+              };
+            } else {
+              console.log("No such document for user:", userId);
+              return null;
+            }
+          })
+        );
+
+        // Lọc bỏ các giá trị null ra khỏi mảng chi tiết người dùng
+        const filteredUserDetails = userDetailsArray.filter(
+          (user) => user !== null && user.id !== currentUserUid // Loại bỏ người dùng đang đăng nhập
+        );
+        setUserDetails(filteredUserDetails);
+      } else {
+        console.log("No user document found for current user.");
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Lắng nghe sự thay đổi trong cột follow của người dùng
+    const unsubscribe = firebase
+      .firestore()
+      .collection("NewUser")
+      .doc(firebase.auth().currentUser.uid)
+      .onSnapshot((snapshot) => {
+        fetchData();
+        fetchUserDetails(suggestedUsers);
+      });
+
+    // Hủy đăng ký lắng nghe khi component bị hủy
+    return () => unsubscribe();
+  }, []);
 
   const findUser = () => {
     UserController.findUserByName(findName)
@@ -65,12 +223,6 @@ const Notification = ({ navigation }) => {
         backgroundColor: "#fff",
       }}
     >
-    <View>
-        <Text style={styles.suggestedUsersTitle}>Danh sách người dùng được gợi ý:</Text>
-        {suggestedUsers.map((user, index) => (
-          <Text key={index}>{index}{user}</Text>
-        ))}
-      </View>
       <View style={styles.inputContainer}>
         <TextInput
           onChangeText={(Findname) => setFindName(Findname)}
@@ -81,15 +233,43 @@ const Notification = ({ navigation }) => {
         />
         <TouchableOpacity
           style={styles.iconStyle}
-          // onPress={() => findUser(findName)}
-          onPress={() => fetchData()}
-
+          onPress={() => findUser(findName)}
         >
           <Ionicons name="search-outline" color="#666" size={25} />
         </TouchableOpacity>
       </View>
       <FlatList
         data={data}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <Card
+            onPress={() =>
+              navigation.navigate("HomeProfile", { userId: item.id })
+            }
+          >
+            <UserInfo>
+              <UserImgWrapper>
+                <UserImg
+                  source={{
+                    uri: item.userImg
+                      ? item.userImg
+                      : "https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg",
+                  }}
+                />
+              </UserImgWrapper>
+              <TextSection>
+                <UserInfoText>
+                  <UserName>{item.name}</UserName>
+                </UserInfoText>
+              </TextSection>
+            </UserInfo>
+          </Card>
+        )}
+      />
+      
+      <Text>Những người bạn có thể biết</Text>
+      <FlatList
+        data={userDetails}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <Card
