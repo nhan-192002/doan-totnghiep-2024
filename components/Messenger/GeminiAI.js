@@ -27,7 +27,7 @@ import {
 const API_KEY = "AIzaSyBpw9CGHKik00yf5PDBzS6iSJsu2MJxaz8";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
-export default function GeminiAi({ navigation, route }) {
+export default function GeminiAi({ route }) {
   const [inputText, setInputText] = useState("");
   const [listData, setListData] = useState([]);
 
@@ -40,7 +40,7 @@ export default function GeminiAi({ navigation, route }) {
 
   const renderItem = ({ item }) => (
     <View>
-      <Message message={item} />
+      <Message message={item} name={name} image={image}/>
       <Response prompt={item} />
     </View>
   );
@@ -86,6 +86,7 @@ export default function GeminiAi({ navigation, route }) {
       </View>
     </View>
   );
+}
 
   function Response({ prompt }) {
     const [generatedText, setGeneratedText] = useState("");
@@ -127,7 +128,7 @@ export default function GeminiAi({ navigation, route }) {
     );
   }
 
-  function Message({ message, route }) {
+  function Message({ message, name, image }) {
     const date = new Date();
 
     return (
@@ -139,29 +140,37 @@ export default function GeminiAi({ navigation, route }) {
             justifyContent: "space-between",
           }}
         >
+          <Text
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              justifyContent: "flex-start",
+            }}
+          >
+            {date.getHours()}:{date.getMinutes()}
+          </Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Text style={{ fontWeight: 500 }}>{name}</Text>
             {image != "" ? (
               <UserImgWrapper>
-                <UserImg source={{ uri: image ? image : null }} style={styles.icon} />
+                <UserImg
+                  source={{ uri: image ? image : null }}
+                  style={styles.icon}
+                />
               </UserImgWrapper>
             ) : (
               <UserImgWrapper>
                 <UserImg source={require("./../../assets/icons/user.png")} />
               </UserImgWrapper>
             )}
-            <Text style={{ fontWeight: 500 }}>{name}</Text>
           </View>
-          <Text style={{ fontSize: 10, fontWeight: 600 }}>
-            {date.getHours()}:{date.getMinutes()}
-          </Text>
         </View>
-        <Text style={{ fontSize: 14, width: "100%", flex: 1, paddingLeft: 0 }}>
-          {message}
-        </Text>
+        <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+          <Text style={{ fontSize: 14, paddingRight: 0 }}>{message}</Text>
+        </View>
       </View>
     );
   }
-}
 
 const styles = StyleSheet.create({
   container: {
