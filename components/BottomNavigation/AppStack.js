@@ -15,6 +15,7 @@ import ChatScreen from "../Messenger/ChatScreen";
 import Notification from "../Notification/Notification";
 import CommentSreen from "../HomePage/CommentSreen";
 import TBnotification from "../TBnotification/TBnotification";
+import GeminiAi from "../Messenger/GeminiAI";
 import { auth, firebase, app, firebaseConfig } from "../../firebase";
 
 const Stack = createNativeStackNavigator();
@@ -45,6 +46,10 @@ const MessageStack = ({ navigation }) => (
         title: route.params.userName,
         headerBackTitleVisible: false,
       })}
+    />
+     <Stack.Screen
+      name="Gemini"
+      component={GeminiAi}
     />
   </Stack.Navigator>
 );

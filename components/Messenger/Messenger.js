@@ -6,6 +6,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  VirtualizedList,
 } from "react-native";
 import {
   Container,
@@ -30,20 +31,71 @@ const Messenger = ({ navigation }) => {
     UserController.dataMessenger(auth.currentUser.uid, (updatedData) => {
       setData(updatedData);
     });
-    return () =>{
+    return () => {
       UserController.loadingMessenger();
+    };
+  }, []);
+
+  const [dataUserAI, setdataUserAI] = useState([]);
+
+  const dataUser = () => {
+    if (auth.currentUser?.uid) {
+      const userDocRef = firebase.firestore().collection("NewUser").doc(auth.currentUser.uid);
+      const unsubscribe = userDocRef.onSnapshot((doc) => {
+        if (doc.exists) {
+          setdataUserAI(doc.data());
+        } else {
+          console.log("No such document!");
+        }
+      });
+  
+      // Trả về hàm hủy đăng ký sự kiện
+      return unsubscribe;
+    } else {
+      console.log("User not logged in or UID not available");
     }
+  };
+  
+
+  useEffect(() => {
+    dataUser();
+    console.log(dataUserAI);
   }, []);
 
   return (
     <View
       style={{
-        height: "100%",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#fff",
+        height: "100%"
       }}
     >
+      <Card
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+        onPress={() =>
+          navigation.navigate("Gemini", {
+            name: dataUserAI.name,
+            image: dataUserAI.userImg,
+          })
+        }
+      >
+        <UserInfo>
+          <UserImgWrapper>
+            <UserImg source={require("./../../assets/icons/robot.png")} />
+          </UserImgWrapper>
+          <TextSection>
+            <UserInfoText>
+              <UserName>Gemini AI</UserName>
+            </UserInfoText>
+          </TextSection>
+        </UserInfo>
+      </Card>
+
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
