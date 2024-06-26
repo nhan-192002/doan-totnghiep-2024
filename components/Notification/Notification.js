@@ -37,7 +37,7 @@ const Notification = ({ navigation }) => {
 
   useEffect(() => {
     fetchData();
-    // console.log(suggestedUsers);
+    console.log(suggestedUsers);
   }, []);
 
   useEffect(() => {

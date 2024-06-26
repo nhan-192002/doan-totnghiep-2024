@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { auth, firebase, app, firebaseConfig } from "../../firebase";
 
+import axios from "axios";
 
 import UserController from "../../controller/UserController";
 
@@ -19,6 +20,7 @@ import PortCard from "./PortCard";
 
 const HomePage = ({ navigation }) => {
   const [data, setData] = useState([]);
+  // const [suggestedUsers, setSuggestedUsers] = useState([]);
 
 
   //hiện thị dữ liệu
@@ -50,6 +52,26 @@ const HomePage = ({ navigation }) => {
   const onPostDelete = (postId) => {
     UserController.handleDelete(postId);
   };
+
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       "http://10.0.0.1:6666/get_recommend_articles",
+  //       {
+  //         uid: auth.currentUser?.uid,
+  //       }
+  //     );
+  //     setSuggestedUsers(response.data.suggested_users);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchData();
+  //   console.log(suggestedUsers);
+  // }, []);
+  
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center',  }}>
       <View style={{ width: '95%' }}>
