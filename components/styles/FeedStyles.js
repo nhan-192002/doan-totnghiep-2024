@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
@@ -13,7 +13,7 @@ export const Card = styled.View`
     background-color: #f8f8f8;
     width: 100%;
     margin-bottom: 20px;
-    border-radius: 10px;
+    border-radius: 20px;
 `;
 
 export const UserInfo = styled.View`

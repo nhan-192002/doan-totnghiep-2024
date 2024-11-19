@@ -7,6 +7,8 @@ import {
   TextInput,
   FlatList,
   Alert,
+  useColorScheme,
+  styles
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth, firebase, app, firebaseConfig } from "../../firebase";
@@ -17,10 +19,20 @@ import UserController from "../../controller/UserController";
 
 import "firebase/firestore";
 import PortCard from "./PortCard";
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 const HomePage = ({ navigation }) => {
   const [data, setData] = useState([]);
   // const [suggestedUsers, setSuggestedUsers] = useState([]);
+  const colorScheme = useColorScheme();
+
+  // const themeTextStyle = colorScheme === 'light' ? styles.lightThemeText : styles.darkThemeText;
+  // const themeContainerStyle = colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
 
 
   //hiện thị dữ liệu
@@ -73,7 +85,7 @@ const HomePage = ({ navigation }) => {
   // }, []);
   
   return (
-    <View style={{ justifyContent: 'center', alignItems: 'center',  }}>
+    <LinearGradient colors={gradientColors} style={{ justifyContent: 'center', alignItems: 'center',  }}>
       <View style={{ width: '95%' }}>
         <FlatList
           data={data}
@@ -91,7 +103,7 @@ const HomePage = ({ navigation }) => {
           keyExtractor={(item) => item.id}
         />
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 

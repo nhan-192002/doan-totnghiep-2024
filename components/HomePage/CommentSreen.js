@@ -200,7 +200,7 @@ const CommentSreen = ({ route, navigation }) => {
         </View>
       </ScrollView>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior="padding" // Hoặc "height", tùy thuộc vào hành vi bạn muốn
         keyboardVerticalOffset={85}
       >
         <View

@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   iconText:{
     fontSize: 35,
     fontWeight: 'bold',
-    // color: '#003865',
+    // color: '#00a9e0',
     color: '#fff'
   },
 
@@ -74,13 +74,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     height: 44,
     width: 300,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
+    borderColor: '#FFFFFF', // Màu viền
+    borderWidth: 1, // Độ dày viền
     // borderWidth: 1,
     borderRadius: 5,
     // borderTopLeftRadius: 30,
     // borderBottomLeftRadius: 30,
-    borderColor: '#fff',
-    borderColor: 'black',
     paddingHorizontal: 20,
     paddingVertical: 10,
     textAlign: 'center',
@@ -94,9 +94,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   iconWrapper1:{
-    width: 220,
+    width: 250,
     height: 44,
-    backgroundColor: '#003865',
+    backgroundColor: '#00a9e0',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
@@ -104,9 +104,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   iconWrapper2:{
-    width: 220,
+    width: 150,
     height: 44,
-    backgroundColor: '#00a9e0',
+    backgroundColor: '#003865',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',

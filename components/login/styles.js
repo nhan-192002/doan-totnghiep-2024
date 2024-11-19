@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   icon:{
     width : 130,
     height: 130,
-    backgroundColor: '#cccccc',
+    backgroundColor: '#FFFFFF',
     borderRadius: 100,
     marginTop: 100,
     justifyContent: 'center',
@@ -72,15 +72,14 @@ const styles = StyleSheet.create({
   },
   input:{
     marginBottom: 20,
-    height: 44,
+    height: 46,
     width: 300,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
+    borderWidth: 1, // Độ dày viền
     // borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 10,
     // borderTopLeftRadius: 30,
     // borderBottomLeftRadius: 30,
-    borderColor: '#fff',
-    borderColor: 'black',
     paddingHorizontal: 20,
     paddingVertical: 10,
     textAlign: 'center',
@@ -94,27 +93,27 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   iconWrapper1:{
-    width: 220,
+    width: 250,
     height: 44,
     backgroundColor: '#00a9e0',
-    borderRadius: 5,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     // borderColor: color.background
     marginBottom: 15,
   },
   iconWrapper2:{
-    width: 220,
+    width: 150,
     height: 44,
     backgroundColor: '#003865',
-    borderRadius: 5,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     // borderColor: color.background
     marginBottom: 10,
   },
   buttonLogin:{
-    fontSize: 20,
+    fontSize: 15,
     color: '#fff',
   },
 })

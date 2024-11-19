@@ -34,8 +34,10 @@ const PortComment = ({ navigation, item, onDelete, onPress, onComment, onLike })
   const [loading, setLoading] = useState(true);
 
   let status = false;
+  let likeText = ""; 
+  let commentsText = "";
 
-  Time = moment(item.postTime).fromNow();
+  const Time = moment(item.postTime).fromNow();
 
   useEffect(() => {
     UserController.getUserData(item.user, (user) => {

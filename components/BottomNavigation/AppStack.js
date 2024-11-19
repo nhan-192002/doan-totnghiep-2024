@@ -1,7 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Text, useColorScheme } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -17,6 +17,7 @@ import CommentSreen from "../HomePage/CommentSreen";
 import TBnotification from "../TBnotification/TBnotification";
 import GeminiAi from "../Messenger/GeminiAI";
 import { auth, firebase, app, firebaseConfig } from "../../firebase";
+import darkModel from "../styles/DarkModel";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -54,7 +55,7 @@ const MessageStack = ({ navigation }) => (
   </Stack.Navigator>
 );
 
-const HomeStack = ({ navigation }) => (
+const HomeStack = ({ navigation, colorScheme }) => (
   <Stack.Navigator>
     <Stack.Screen
       name="Trang chủ"
@@ -68,6 +69,7 @@ const HomeStack = ({ navigation }) => (
         headerStyle: {
           shadowColor: "#fff",
           elevation: 0,
+          backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
         },
       }}
     />
@@ -150,6 +152,10 @@ const ProfileStack = ({ navigation }) => (
 // const CustomTabBarButton = ({children})
 
 const AppStack = () => {
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? darkModel.lightContainer : darkModel.darkContainer;
   return (
     <Tab.Navigator
       screenOptions={{
@@ -159,7 +165,7 @@ const AppStack = () => {
     >
       <Tab.Screen
         name="Home"
-        component={HomeStack}
+        children={() => <HomeStack colorScheme={colorScheme} />}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
@@ -169,6 +175,9 @@ const AppStack = () => {
               size={size}
             />
           ),
+          tabBarStyle: {
+            backgroundColor: colorScheme === 'light' ? '#EEEEEE' : '#000000', // Đặt backgroundColor tùy thuộc vào colorScheme
+          },
         }}
       />
       <Tab.Screen

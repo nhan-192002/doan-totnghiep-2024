@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Alert,
+  useColorScheme,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -30,13 +31,25 @@ import { auth, firebase, app, firebaseConfig } from "../../firebase";
 import "firebase/firestore";
 import moment from "moment/moment";
 import UserController from "../../controller/UserController";
+import styles from "../login/styles";
+import darkModel from "../styles/DarkModel";
 
 const PortCard = ({ item, onDelete, onPress, onComment, onLike }) => {
   const [userData, setUserData] = useState(null);
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? darkModel.lightContainer : darkModel.darkContainer;
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
 
   let status = false;
+  let likeText = ""; 
+  let commentsText = ""; 
 
-  Time = moment(item.time).fromNow();
+  const Time = moment(item.time).fromNow();
 
   if (item.likes.length == 1) {
     likeText = "1 Thích";
@@ -199,7 +212,7 @@ const PortCard = ({ item, onDelete, onPress, onComment, onLike }) => {
       
       
       (
-        <Card key={item.id}>
+        <Card key={item.id} style={[themeContainerStyle]}>
         <UserInfo>
           <UserImg
             source={{
@@ -211,15 +224,17 @@ const PortCard = ({ item, onDelete, onPress, onComment, onLike }) => {
           />
           <UserInfoText>
             <TouchableOpacity onPress={onPress}>
-              <UserName>{userData ? userData.name || "" : ""}</UserName>
+              <UserName style={[themeTextStyle]}>{userData ? userData.name || "" : ""}</UserName>
             </TouchableOpacity>
 
             <PostTime>{Time}</PostTime>
           </UserInfoText>
         </UserInfo>
-        {item.text != "" ? <PostText>{item.text}</PostText> : ""}
+        {item.text != "" ? <PostText style={[themeTextStyle]}>{item.text}</PostText> : ""}
         {item.image != "" ? (
-          <PostImg source={{ uri: `${item.image}` }} />
+          <TouchableOpacity onPress={() => onComment(item)}>
+            <PostImg source={{ uri: `${item.image}` }} />
+          </TouchableOpacity>
         ) : (
           <Divider />
         )}
@@ -237,14 +252,14 @@ const PortCard = ({ item, onDelete, onPress, onComment, onLike }) => {
                 <>
                   <Interaction onPress={() => onLike(item)}>
                     <Ionicons name="heart" size={25} color="#2e64e5" />
-                    <InteractionText>{likeText}</InteractionText>
+                    <InteractionText style={[themeTextStyle]}>{likeText}</InteractionText>
                   </Interaction>
                 </>
               ) : (
                 <>
                   <Interaction onPress={() => onLike(item)}>
                     <Ionicons name="heart-outline" size={25} color="#333" />
-                    <InteractionText>{likeText}</InteractionText>
+                    <InteractionText style={[themeTextStyle]}>{likeText}</InteractionText>
                   </Interaction>
                 </>
               )}
@@ -252,7 +267,7 @@ const PortCard = ({ item, onDelete, onPress, onComment, onLike }) => {
           )}
           <Interaction onPress={() => onComment(item)}>
             <Ionicons name="chatbox-outline" size={25} />
-            <InteractionText>
+            <InteractionText style={[themeTextStyle]}>
               {item.comments.length > 0 ? item.comments.length : ""}{" "}
               {commentsText}
             </InteractionText>

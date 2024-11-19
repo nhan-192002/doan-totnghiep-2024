@@ -14,7 +14,6 @@ import 'firebase/compat/storage';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const firebaseConfig = {
- 
   apiKey: "AIzaSyBz3LFapIajLud_ctVTaP9wSvZZ8E2Yjh4",
   authDomain: "doan-danentang.firebaseapp.com",
   databaseURL: "https://doan-danentang-default-rtdb.firebaseio.com",
