@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   VirtualizedList,
+  useColorScheme,
 } from "react-native";
 import {
   Container,
@@ -22,10 +23,23 @@ import {
 } from "../styles/MessageStyles";
 import { auth, firebase } from "../../firebase";
 import UserController from "../../controller/UserController";
+import darkModel from "../styles/DarkModel";
+import { LinearGradient } from "expo-linear-gradient";
+
 
 const Messenger = ({ navigation }) => {
   const db = firebase.firestore();
   const [data, setData] = useState([]);
+
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? darkModel.lightContainer : darkModel.darkContainer;
+  const themeIconStayle = colorScheme === 'light' ? '#242c40' : '#DDDDDD';
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
 
   useEffect(() => {
     UserController.dataMessenger(auth.currentUser.uid, (updatedData) => {
@@ -63,7 +77,8 @@ const Messenger = ({ navigation }) => {
   }, []);
 
   return (
-    <View
+    <LinearGradient
+    colors={gradientColors}
       style={{
         justifyContent: "center",
         alignItems: "center",
@@ -75,7 +90,6 @@ const Messenger = ({ navigation }) => {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#fff",
         }}
         onPress={() =>
           navigation.navigate("Gemini", {
@@ -90,7 +104,7 @@ const Messenger = ({ navigation }) => {
           </UserImgWrapper>
           <TextSection>
             <UserInfoText>
-              <UserName>Gemini AI</UserName>
+              <UserName style={themeTextStyle}>Gemini AI</UserName>
             </UserInfoText>
           </TextSection>
         </UserInfo>
@@ -126,16 +140,16 @@ const Messenger = ({ navigation }) => {
                       navigation.navigate("HomeProfile", { userId: item.uid })
                     }
                   >
-                    <UserName>{item.name}</UserName>
+                    <UserName style={themeTextStyle}>{item.name}</UserName>
                   </TouchableOpacity>
                 </UserInfoText>
-                <MessageText>{item.email}</MessageText>
+                <MessageText style={themeTextStyle}>{item.email}</MessageText>
               </TextSection>
             </UserInfo>
           </Card>
         )}
       />
-    </View>
+    </LinearGradient>
   );
 };
 

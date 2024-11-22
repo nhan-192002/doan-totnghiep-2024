@@ -7,6 +7,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  useColorScheme,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Container } from "../styles/FeedStyles";
@@ -16,6 +17,8 @@ import styles from "./styles";
 import PortCard from "./../HomePage/PortCard";
 import AuthController from "../../controller/AuthController";
 import UserController from "../../controller/UserController";
+import { LinearGradient } from "expo-linear-gradient";
+import darkModel from "../styles/DarkModel";
 
 const UserPage = ({ navigation, route }) => {
   const [userId, setUserId] = useState(null);
@@ -24,6 +27,16 @@ const UserPage = ({ navigation, route }) => {
   const [data, setData] = useState([]);
   const [follow, setFollow] = useState(null);
   const [numberfollow, setNumberFollow] = useState(null);
+
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? darkModel.lightContainer : darkModel.darkContainer;
+  const themeIconStayle = colorScheme === 'light' ? '#242c40' : '#DDDDDD';
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
 
   // lấy dữ liệu
   useEffect(() => {
@@ -157,108 +170,111 @@ const UserPage = ({ navigation, route }) => {
   // }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    // SafeAreaView
+    <SafeAreaView style={{ flex: 1 }}>
       <Container>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          showVerticalScrollIndicator={false}
-        >
-          <Image
-            style={styles.userImg}
-            source={{
-              uri: userData
-                ? userData.userImg ||
-                  "https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg"
-                : "https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg",
-            }}
-          />
-          <Text style={styles.userName}>{userData ? userData.name : ""}</Text>
-          <Text style={styles.aboutUser}>
-            {userData ? userData.email : userId}
-          </Text>
-          <View style={styles.userBtnWrapper}>
-            {route.params && route.params.userId != auth.currentUser?.uid ? (
-              <>
-                <TouchableOpacity
-                  style={styles.userBtn}
-                  onPress={() =>
-                    navigation.navigate("Chat", {
-                      userName: userData ? userData.name : "",
-                      uid: route.params.userId,
-                    })
-                  }
-                >
-                  <Text style={styles.userBtnTxt}>Tin nhắn</Text>
-                </TouchableOpacity>
-                {auth.currentUser?.email == 'admin@gmail.com' ? null : (
+        <LinearGradient colors={gradientColors} style={{ flex: 1 }}>
+            <ScrollView
+              style={styles.container}
+              contentContainerStyle={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              showVerticalScrollIndicator={false}
+            >
+              <Image
+                style={styles.userImg}
+                source={{
+                  uri: userData
+                    ? userData.userImg ||
+                      "https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg"
+                    : "https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg",
+                }}
+              />
+              <Text style={[styles.userName,themeTextStyle]}>{userData ? userData.name : ""}</Text>
+              <Text style={styles.aboutUser}>
+                {userData ? userData.email : userId}
+              </Text>
+              <View style={styles.userBtnWrapper}>
+                {route.params && route.params.userId != auth.currentUser?.uid ? (
                   <>
-                    {follow != null ? (
-                      <TouchableOpacity
-                        style={styles.userBtn}
-                        onPress={handleAddToDeleteFollower}
-                      >
-                        <Text style={styles.userBtnTxt}>Hủy theo dõi</Text>
-                      </TouchableOpacity>
-                    ) : (
-                      <TouchableOpacity
-                        style={styles.userBtn}
-                        onPress={handleAddToDeleteFollower}
-                      >
-                        <Text style={styles.userBtnTxt}>Theo dõi</Text>
-                      </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.userBtn}
+                      onPress={() =>
+                        navigation.navigate("Chat", {
+                          userName: userData ? userData.name : "",
+                          uid: route.params.userId,
+                        })
+                      }
+                    >
+                      <Text style={styles.userBtnTxt}>Tin nhắn</Text>
+                    </TouchableOpacity>
+                    {auth.currentUser?.email == 'admin@gmail.com' ? null : (
+                      <>
+                        {follow != null ? (
+                          <TouchableOpacity
+                            style={styles.userBtn}
+                            onPress={handleAddToDeleteFollower}
+                          >
+                            <Text style={styles.userBtnTxt}>Hủy theo dõi</Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            style={styles.userBtn}
+                            onPress={handleAddToDeleteFollower}
+                          >
+                            <Text style={styles.userBtnTxt}>Theo dõi</Text>
+                          </TouchableOpacity>
+                        )}
+                      </>
                     )}
                   </>
+                ) : (
+                  <>
+                    <TouchableOpacity
+                      style={styles.userBtn}
+                      onPress={() => navigation.navigate("EditProfile")}
+                    >
+                      <Text style={styles.userBtnTxt}>Chỉnh sửa</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.userBtn}
+                      onPress={() => logout()}
+                    >
+                      <Text style={styles.userBtnTxt}>Đăng xuất</Text>
+                    </TouchableOpacity>
+                  </>
                 )}
-              </>
-            ) : (
-              <>
-                <TouchableOpacity
-                  style={styles.userBtn}
-                  onPress={() => navigation.navigate("EditProfile")}
-                >
-                  <Text style={styles.userBtnTxt}>Chỉnh sửa</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.userBtn}
-                  onPress={() => logout()}
-                >
-                  <Text style={styles.userBtnTxt}>Đăng xuất</Text>
-                </TouchableOpacity>
-              </>
-            )}
-          </View>
+              </View>
 
-          <View style={styles.userInfoWrapper}>
-            <View style={styles.userInfoItem}>
-              <Text style={styles.userInfoTitle}>{data.length}</Text>
-              <Text style={styles.userInfoSubTitle}>Bài viết</Text>
-            </View>
-            {/* <View style={styles.userInfoItem}>
-              <Text style={styles.userInfoTitle}>10,000</Text>
-              <Text style={styles.userInfoSubTitle}>Người theo dõi</Text>
-            </View> */}
-            <View style={styles.userInfoItem}>
-              <Text style={styles.userInfoTitle}>
-                {userData ? userData.follow.length : numberfollow}
-              </Text>
-              <Text style={styles.userInfoSubTitle}>Đang theo dõi</Text>
-            </View>
-          </View>
+              <View style={styles.userInfoWrapper}>
+                <View style={styles.userInfoItem}>
+                  <Text style={[styles.userInfoTitle,themeTextStyle]}>{data.length}</Text>
+                  <Text style={styles.userInfoSubTitle}>Bài viết</Text>
+                </View>
+                {/* <View style={styles.userInfoItem}>
+                  <Text style={styles.userInfoTitle}>10,000</Text>
+                  <Text style={styles.userInfoSubTitle}>Người theo dõi</Text>
+                </View> */}
+                <View style={styles.userInfoItem}>
+                  <Text style={[styles.userInfoTitle,themeTextStyle]}>
+                    {userData ? userData.follow.length : numberfollow}
+                  </Text>
+                  <Text style={styles.userInfoSubTitle}>Đang theo dõi</Text>
+                </View>
+              </View>
 
-          {data.map((item) => (
-            <PortCard
-              key={item.id}
-              item={item}
-              onLike={onLike}
-              onComment={onComment}
-              onDelete={() => onPostDelete(item.id)}
-            />
-          ))}
-        </ScrollView>
+              {data.map((item) => (
+                <PortCard
+                  key={item.id}
+                  item={item}
+                  onLike={onLike}
+                  onComment={onComment}
+                  onDelete={() => onPostDelete(item.id)}
+                />
+              ))}
+            </ScrollView>
+        </LinearGradient>
       </Container>
     </SafeAreaView>
   );

@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   Keyboard,
+  useColorScheme,
 } from "react-native";
 import {
   Card,
@@ -34,12 +35,23 @@ import { auth, firebase } from "./../../firebase";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import "firebase/firestore";
 import UserController from "../../controller/UserController";
+import darkModel from "../styles/DarkModel";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const MoreNews = ({ navigation }) => {
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [TextNew, setTextNew] = useState("");
   const [userData, setUserData] = useState(null);
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? darkModel.lightContainer : darkModel.darkContainer;
+  const themeIconStayle = colorScheme === 'light' ? '#242c40' : '#DDDDDD';
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
 
   const uploandfile = async () => {
     if (image?.uri != null) {
@@ -125,7 +137,7 @@ const MoreNews = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={styles.viewlAll}>
+    <LinearGradient colors={gradientColors} style={styles.viewlAll}>
       <View style={styles.viewScol}>
         <View style={styles.imgUser}>
           <View
@@ -146,7 +158,7 @@ const MoreNews = ({ navigation }) => {
                   : "https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg",
               }}
             />
-            <Text style={styles.textUser1}>
+            <Text style={[styles.textUser1,themeTextStyle]}>
               {userData ? userData.name : ""}
             </Text>
           </View>
@@ -159,7 +171,7 @@ const MoreNews = ({ navigation }) => {
           </TouchableOpacity> */}
           {uploading ?(<Text>đang tải bài viết...</Text>):(<InteractionWrapper>
             <Interaction onPress={uploandfile}>
-              <Ionicons name="cloud-upload-outline" size={30} />
+              <Ionicons name="cloud-upload-outline" size={30} color={themeIconStayle}/>
             </Interaction>
           </InteractionWrapper>)}
         </View>
@@ -183,6 +195,7 @@ const MoreNews = ({ navigation }) => {
                   style={styles.closeImg}
                   name="close-circle-outline"
                   size={30}
+                  color={themeIconStayle}
                 />
               </TouchableOpacity>
             </View>
@@ -199,7 +212,7 @@ const MoreNews = ({ navigation }) => {
             </TouchableOpacity> */}
             <InteractionWrapper>
               <Interaction onPress={openCamera}>
-                <Ionicons name="camera-outline" size={35} />
+                <Ionicons name="camera-outline" size={35} color={themeIconStayle}/>
               </Interaction>
             </InteractionWrapper>
             {/* <TouchableOpacity onPress={pickImage}>
@@ -212,13 +225,13 @@ const MoreNews = ({ navigation }) => {
             </TouchableOpacity> */}
             <InteractionWrapper>
               <Interaction onPress={pickImage}>
-                <Ionicons name="image-outline" size={35} />
+                <Ionicons name="image-outline" size={35} color={themeIconStayle}/>
               </Interaction>
             </InteractionWrapper>
           </View>
         </ScrollView>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 

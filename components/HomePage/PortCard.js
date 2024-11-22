@@ -31,7 +31,6 @@ import { auth, firebase, app, firebaseConfig } from "../../firebase";
 import "firebase/firestore";
 import moment from "moment/moment";
 import UserController from "../../controller/UserController";
-import styles from "../login/styles";
 import darkModel from "../styles/DarkModel";
 
 const PortCard = ({ item, onDelete, onPress, onComment, onLike }) => {
@@ -258,7 +257,7 @@ const PortCard = ({ item, onDelete, onPress, onComment, onLike }) => {
               ) : (
                 <>
                   <Interaction onPress={() => onLike(item)}>
-                    <Ionicons name="heart-outline" size={25} color="#333" />
+                    <Ionicons name="heart-outline" size={25} color={(colorScheme === 'light'?'#242c40':'#DDDDDD')} />
                     <InteractionText style={[themeTextStyle]}>{likeText}</InteractionText>
                   </Interaction>
                 </>
@@ -266,7 +265,7 @@ const PortCard = ({ item, onDelete, onPress, onComment, onLike }) => {
             </>
           )}
           <Interaction onPress={() => onComment(item)}>
-            <Ionicons name="chatbox-outline" size={25} />
+            <Ionicons name="chatbox-outline" size={25} color={(colorScheme === 'light'?'#242c40':'#DDDDDD')} />
             <InteractionText style={[themeTextStyle]}>
               {item.comments.length > 0 ? item.comments.length : ""}{" "}
               {commentsText}
@@ -275,10 +274,10 @@ const PortCard = ({ item, onDelete, onPress, onComment, onLike }) => {
           {auth.currentUser?.uid == item.user ||
           auth.currentUser?.email == "admin@gmail.com" ? (
             <Interaction onPress={() => onDelete(item.id)}>
-              <Ionicons name="trash-outline" size={25} />
+              <Ionicons name="trash-outline" size={25} color={(colorScheme === 'light'?'#242c40':'#DDDDDD')}/>
             </Interaction>
           ) : (   <Interaction onPress={() => report(userData?.name, item.id)}>
-              <Ionicons name="alert-circle-outline" size={25} />
+              <Ionicons name="alert-circle-outline" size={25} color={(colorScheme === 'light'?'#242c40':'#DDDDDD')}/>
             </Interaction>)}
         </InteractionWrapper>
       </Card>

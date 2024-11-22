@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   View,
+  useColorScheme,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -20,12 +21,24 @@ import { Alert } from "react-native";
 import { auth, firebase } from "../../firebase";
 import { DocumentSnapshot } from "firebase/firestore";
 import UserController from "../../controller/UserController";
+import { LinearGradient } from "expo-linear-gradient";
+import darkModel from "../styles/DarkModel";
 
 const EditProfileScreen = ({ navigation }) => {
   const [image, setImage] = useState(null);
   const [Uri, setUri] = useState(null);
   const [userData, setUserData] = useState(null);
   const [uploading, setUploading] = useState(false);
+
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? darkModel.lightContainer : darkModel.darkContainer;
+  const themeIconStayle = colorScheme === 'light' ? '#242c40' : '#DDDDDD';
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
 
   useEffect(() => {
     UserController.getUserDataProfile(auth.currentUser.uid)
@@ -146,7 +159,7 @@ const EditProfileScreen = ({ navigation }) => {
     }
   };
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={gradientColors} style={styles.container}>
       <View style={{ margin: 20 }}>
         <View style={{ alignItems: "center" }}>
           <TouchableOpacity onPress={() => takeImg()}>
@@ -196,59 +209,59 @@ const EditProfileScreen = ({ navigation }) => {
             </View>
           </TouchableOpacity>
 
-          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: "bold" }}>
+          <Text style={[{ marginTop: 10, fontSize: 18, fontWeight: "bold" },themeTextStyle]}>
             {userData ? userData.name : ""}
           </Text>
-          <Text>{auth.currentUser.uid}</Text>
+          <Text style={themeTextStyle}>{auth.currentUser.uid}</Text>
         </View>
         <View style={styles.action}>
-          <FontAwesome name="user-o" color="#333333" size={20} />
+          <FontAwesome name="user-o" color={themeIconStayle} size={20} />
           <TextInput
             placeholder="Tên người dùng"
             placeholderTextColor="#666666"
             autoCorrect={false}
             value={userData ? userData.name : ""}
             onChangeText={(txt) => setUserData({ ...userData, name: txt })}
-            style={styles.textInput}
+            style={[styles.textInput,themeTextStyle]}
           />
         </View>
         <View style={styles.action}>
-          <Ionicons name="clipboard-outline" color="#333333" size={20} />
+          <Ionicons name="clipboard-outline" color={themeIconStayle} size={20} />
           <TextInput
             placeholder="Giới thiệu"
             placeholderTextColor="#666666"
             autoCorrect={false}
             value={userData ? userData.about : ""}
             onChangeText={(txt) => setUserData({ ...userData, about: txt })}
-            style={styles.textInput}
+            style={[styles.textInput,themeTextStyle]}
           />
         </View>
         <View style={styles.action}>
-          <Feather name="phone" color="#333333" size={20} />
+          <Feather name="phone" color={themeIconStayle} size={20} />
           <TextInput
             placeholder="Số điện thoại"
             placeholderTextColor="#666666"
             autoCorrect={false}
             value={userData ? userData.phone : ""}
             onChangeText={(txt) => setUserData({ ...userData, phone: txt })}
-            style={styles.textInput}
+            style={[styles.textInput,themeTextStyle]}
           />
         </View>
         <View style={styles.action}>
-          <FontAwesome name="globe" color="#333333" size={20} />
+          <FontAwesome name="globe" color={themeIconStayle} size={20} />
           <TextInput
             placeholder="Đất nước"
             placeholderTextColor="#666666"
             autoCorrect={false}
             value={userData ? userData.country : ""}
             onChangeText={(txt) => setUserData({ ...userData, country: txt })}
-            style={styles.textInput}
+            style={[styles.textInput,themeTextStyle]}
           />
         </View>
         <View style={styles.action}>
           <MaterialCommunityIcons
             name="map-marker-outline"
-            color="#333333"
+            color={themeIconStayle}
             size={20}
           />
           <TextInput
@@ -257,12 +270,12 @@ const EditProfileScreen = ({ navigation }) => {
             autoCorrect={false}
             value={userData ? userData.city : ""}
             onChangeText={(txt) => setUserData({ ...userData, city: txt })}
-            style={styles.textInput}
+            style={[styles.textInput,themeTextStyle]}
           />
         </View>
         <FormButton buttonTitle="Update" onPress={handleUpdate} />
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 

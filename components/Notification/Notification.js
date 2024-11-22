@@ -6,6 +6,7 @@ import {
   StyleSheet,
   FlatList,
   TextInput,
+  useColorScheme,
 } from "react-native";
 import {
   Container,
@@ -27,6 +28,8 @@ import UserController from "../../controller/UserController";
 import { auth, firebase, app, firebaseConfig } from "../../firebase";
 
 import axios from "axios";
+import darkModel from "../styles/DarkModel";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Notification = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -34,6 +37,15 @@ const Notification = ({ navigation }) => {
 
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
+
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? darkModel.lightContainer : darkModel.darkContainer;
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
 
   useEffect(() => {
     fetchData();
@@ -215,21 +227,21 @@ const Notification = ({ navigation }) => {
   };
 
   return (
-    <View
-      style={{
+    <LinearGradient
+    colors={gradientColors}
+      style={[{
         height: "100%",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#fff",
-      }}
+      },themeContainerStyle]}
     >
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer,themeContainerStyle]}>
         <TextInput
           onChangeText={(Findname) => setFindName(Findname)}
-          style={styles.input}
+          style={[styles.input,{color:(colorScheme === 'light'?'#242c40':'#DDDDDD')}]}
           numberOfLines={1}
           placeholder="Nhập tên cần tìm"
-          placeholderTextColor="#666"
+          placeholderTextColor={themeTextStyle}
         />
         <TouchableOpacity
           style={styles.iconStyle}
@@ -259,7 +271,7 @@ const Notification = ({ navigation }) => {
               </UserImgWrapper>
               <TextSection>
                 <UserInfoText>
-                  <UserName>{item.name}</UserName>
+                  <UserName style={themeTextStyle}>{item.name}</UserName>
                 </UserInfoText>
               </TextSection>
             </UserInfo>
@@ -267,7 +279,7 @@ const Notification = ({ navigation }) => {
         )}
       />
       
-      <Text>Những người bạn có thể biết</Text>
+      <Text style={themeTextStyle}>Những người bạn có thể biết</Text>
       <FlatList
         data={userDetails}
         keyExtractor={(item, index) => index.toString()}
@@ -296,7 +308,7 @@ const Notification = ({ navigation }) => {
           </Card>
         )}
       />
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -332,7 +344,6 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1,
     fontSize: 16,
-    color: "#333",
     justifyContent: "center",
     alignItems: "center",
   },

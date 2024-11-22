@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, ScrollView, Text, Button, StyleSheet } from "react-native";
-import { Bubble, GiftedChat, Send } from "react-native-gifted-chat";
+import { View, ScrollView, Text, Button, StyleSheet, useColorScheme } from "react-native";
+import { Bubble, GiftedChat, Send, InputToolbar  } from "react-native-gifted-chat";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { auth, firebase } from "../../firebase";
+import darkModel from "../styles/DarkModel";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ChatScreen = ({ navigation, route }) => {
   const [messages, setMessages] = useState([]);
@@ -12,12 +14,40 @@ const ChatScreen = ({ navigation, route }) => {
   const db = firebase.firestore();
   const [userData, setUserData] = useState(null);
 
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? '#DDDDDD' : '#222222';
+  const themeIconStayle = colorScheme === 'light' ? '#242c40' : '#DDDDDD';
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
+
+  // useEffect(() => {
+  //   navigation.getParent().setOptions({ tabBarStyle: { display: "none" } });
+  //   return () => {
+  //     navigation.getParent().setOptions({ tabBarStyle: { display: "flex" } });
+  //   };
+  // }, []);
+
+
   useEffect(() => {
-    navigation.getParent().setOptions({ tabBarStyle: { display: "none" } });
+    // Ẩn thanh bottom navigation
+    navigation.getParent()?.setOptions({
+      tabBarStyle: { display: "none" },
+    });
+
     return () => {
-      navigation.getParent().setOptions({ tabBarStyle: { display: "flex" } });
+      // Hiển thị lại thanh bottom navigation và khôi phục màu
+      navigation.getParent()?.setOptions({
+        tabBarStyle: {
+          display: "flex",
+          backgroundColor: colorScheme === "light" ? "#EEEEEE" : "#000000", // Đặt lại màu theo chế độ
+        },
+      });
     };
-  }, []);
+  }, [navigation, colorScheme]);
 
   const getAllMessages = async () => {
     const docid =
@@ -103,6 +133,28 @@ const ChatScreen = ({ navigation, route }) => {
   //   );
   // };
 
+  const renderInputToolbar = (props) => {
+    return (
+      <InputToolbar
+        {...props}
+        containerStyle={{
+          backgroundColor: colorScheme === 'light' ? '#f9f9f9' : '#1e1e1e', // Nền của khung nhập tin nhắn
+          borderTopWidth: 1,
+          borderTopColor: colorScheme === 'light' ? '#e6e6e6' : '#333', // Màu viền trên
+        }}
+        textInputStyle={{
+          color: colorScheme === 'light' ? '#000' : '#fff', // Màu chữ trong khung nhập tin nhắn
+          backgroundColor: colorScheme === 'light' ? '#fff' : '#2a2a2a', // Nền khung nhập
+          borderRadius: 20,
+          paddingHorizontal: 15,
+          marginHorizontal: 10,
+          marginVertical: 5,
+        }}
+      />
+    );
+  };
+  
+
   const renderSend = (props) => {
     return (
       <Send {...props}>
@@ -117,19 +169,22 @@ const ChatScreen = ({ navigation, route }) => {
   };
 
   return (
-    <GiftedChat
-      messages={messages}
-      showAvatarForEveryMessage={true}
-      onSend={(text) => onSend(text)}
-      user={{
-        _id: auth.currentUser.uid,
-        avatar: userData ? userData.userImg || "" : "",
-      }}
-      // renderBubble={renderBubble}
-      alwaysShowSend
-      renderSend={renderSend}
-      scrollToBottom
-    />
+    <View style={[{flex:1, backgroundColor: themeContainerStyle}]}>
+      <GiftedChat
+        messages={messages}
+        showAvatarForEveryMessage={true}
+        onSend={(text) => onSend(text)}
+        user={{
+          _id: auth.currentUser.uid,
+          avatar: userData ? userData.userImg || "" : "",
+        }}
+        // renderBubble={renderBubble}
+        alwaysShowSend
+        renderSend={renderSend}
+        renderInputToolbar={renderInputToolbar}
+        scrollToBottom
+      />
+    </View>
   );
 };
 export default ChatScreen;

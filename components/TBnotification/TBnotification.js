@@ -5,10 +5,13 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  useColorScheme,
 } from "react-native";
 
 import { auth, firebase } from "../../firebase";
 import UserController from "../../controller/UserController";
+import darkModel from "../styles/DarkModel";
+import { LinearGradient } from "expo-linear-gradient";
 
 const TBnotification = ({ navigation }) => {
   const [userData, setUserData] = useState([]);
@@ -25,8 +28,18 @@ const TBnotification = ({ navigation }) => {
     navigation.navigate("Comment", { postID });
   };
 
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? darkModel.lightContainer : darkModel.darkContainer;
+  const themeIconStayle = colorScheme === 'light' ? '#242c40' : '#DDDDDD';
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
+
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={gradientColors} style={styles.container}>
       <FlatList
         data={userData}
         keyExtractor={(item, index) => index.toString()}
@@ -39,7 +52,7 @@ const TBnotification = ({ navigation }) => {
                 <TouchableOpacity
                   onPress={() => handleCommentPress(item.postId)}
                 >
-                  <Text>"{item.name}" đã yêu thích bài viết của bạn</Text>
+                  <Text style={themeTextStyle}>"{item.name}" đã yêu thích bài viết của bạn</Text>
                   <Text style={styles.notificationTime}>
                     Email: {item.email}
                   </Text>
@@ -49,7 +62,7 @@ const TBnotification = ({ navigation }) => {
           </View>
         )}
       />
-    </View>
+    </LinearGradient>
   );
 };
 

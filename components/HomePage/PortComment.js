@@ -5,6 +5,7 @@ import {
   Image,
   ScrollView,
   TextInput,
+  useColorScheme,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -28,10 +29,20 @@ import { auth, firebase, app, firebaseConfig } from "../../firebase";
 import "firebase/firestore";
 import moment from "moment/moment";
 import UserController from "../../controller/UserController";
+import darkModel from "../styles/DarkModel";
 
 const PortComment = ({ navigation, item, onDelete, onPress, onComment, onLike }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? darkModel.lightContainer : darkModel.darkContainer;
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
 
   let status = false;
   let likeText = ""; 
@@ -49,7 +60,7 @@ const PortComment = ({ navigation, item, onDelete, onPress, onComment, onLike })
 
 
   return (
-    <Card key={item.id}>
+    <Card key={item.id} style={[themeContainerStyle]}>
       <UserInfo>
         <View
           style={{
@@ -70,7 +81,7 @@ const PortComment = ({ navigation, item, onDelete, onPress, onComment, onLike })
             />
             <UserInfoText>
               <TouchableOpacity onPress={onPress}>
-                <UserName>{userData ? userData.name || "" : ""}</UserName>
+                <UserName style={themeTextStyle}>{userData ? userData.name || "" : ""}</UserName>
               </TouchableOpacity>
 
               <PostTime>{Time}</PostTime>
@@ -80,7 +91,7 @@ const PortComment = ({ navigation, item, onDelete, onPress, onComment, onLike })
             <InteractionWrapper>
               {auth.currentUser.uid == item.user ? (
                 <Interaction onPress={() => onDelete(item.id)}>
-                  <Ionicons name="trash-outline" size={25} />
+                  <Ionicons name="trash-outline" size={25} color={(colorScheme === 'light'?'#242c40':'#DDDDDD')}/>
                 </Interaction>
               ) : null}
             </InteractionWrapper>
@@ -88,7 +99,7 @@ const PortComment = ({ navigation, item, onDelete, onPress, onComment, onLike })
         </View>
       </UserInfo>
       {item.text != "" ?(
-        <PostText>{item.text}</PostText>
+        <PostText style={themeTextStyle}>{item.text}</PostText>
       ):(
         ''
       )}

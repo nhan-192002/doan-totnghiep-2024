@@ -22,7 +22,7 @@ import darkModel from "../styles/DarkModel";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const MessageStack = ({ navigation }) => (
+const MessageStack = ({ navigation,  colorScheme}) => (
   <Stack.Navigator>
     <Stack.Screen
       name="PageMessages"
@@ -37,7 +37,11 @@ const MessageStack = ({ navigation }) => (
         headerStyle: {
           shadowColor: "#fff",
           elevation: 0,
+          backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
         },
+        tabBarStyle: {
+            backgroundColor: colorScheme === 'light' ? '#EEEEEE' : '#000000', // Đặt backgroundColor tùy thuộc vào colorScheme
+          },
       }}
     />
     <Stack.Screen
@@ -46,6 +50,14 @@ const MessageStack = ({ navigation }) => (
       options={({ route }) => ({
         title: route.params.userName,
         headerBackTitleVisible: false,
+        headerStyle: {
+          shadowColor: "#fff",
+          elevation: 0,
+          backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
+        },
+        tabBarStyle: {
+            backgroundColor: colorScheme === 'light' ? '#EEEEEE' : '#000000', // Đặt backgroundColor tùy thuộc vào colorScheme
+          },
       })}
     />
      <Stack.Screen
@@ -83,6 +95,7 @@ const HomeStack = ({ navigation, colorScheme }) => (
           backgroundColor: "#fff",
           shadowColor: "#fff",
           elevation: 0,
+          backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
         },
         headerBackTitleVisible: false,
         headerBackImage: () => (
@@ -99,7 +112,7 @@ const HomeStack = ({ navigation, colorScheme }) => (
         title: "Bình luận",
         headerTitleAlign: "center",
         headerStyle: {
-          backgroundColor: "#fff",
+          backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
           shadowColor: "#fff",
           elevation: 0,
         },
@@ -114,7 +127,7 @@ const HomeStack = ({ navigation, colorScheme }) => (
   </Stack.Navigator>
 );
 
-const ProfileStack = ({ navigation }) => (
+const ProfileStack = ({ navigation, colorScheme }) => (
   <Stack.Navigator>
     <Stack.Screen
       name="NameProfile"
@@ -129,6 +142,7 @@ const ProfileStack = ({ navigation }) => (
         headerStyle: {
           shadowColor: "#fff",
           elevation: 0,
+          backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
         },
       }}
     />
@@ -142,6 +156,7 @@ const ProfileStack = ({ navigation }) => (
           backgroundColor: "#fff",
           shadowColor: "#fff",
           elevation: 0,
+          backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
         },
         headerBackTitleVisible: false,
       }}
@@ -196,6 +211,10 @@ const AppStack = () => {
           headerStyle: {
             shadowColor: "#fff",
             elevation: 0,
+            backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
+          },
+          tabBarStyle: {
+            backgroundColor: colorScheme === 'light' ? '#EEEEEE' : '#000000', // Đặt backgroundColor tùy thuộc vào colorScheme
           },
         }}
       />
@@ -215,6 +234,10 @@ const AppStack = () => {
           headerStyle: {
             shadowColor: "#fff",
             elevation: 0,
+            backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
+          },
+          tabBarStyle: {
+            backgroundColor: colorScheme === 'light' ? '#EEEEEE' : '#000000', // Đặt backgroundColor tùy thuộc vào colorScheme
           },
         }}
       />)}
@@ -234,12 +257,16 @@ const AppStack = () => {
           headerStyle: {
             shadowColor: "#fff",
             elevation: 0,
+            backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
+          },
+          tabBarStyle: {
+            backgroundColor: colorScheme === 'light' ? '#EEEEEE' : '#000000', // Đặt backgroundColor tùy thuộc vào colorScheme
           },
         }}
       />
       <Tab.Screen
         name="Messages"
-        component={MessageStack}
+        children={() => <MessageStack colorScheme={colorScheme} />}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons
@@ -248,17 +275,23 @@ const AppStack = () => {
               size={size}
             />
           ),
+          tabBarStyle: {
+            backgroundColor: colorScheme === 'light' ? '#EEEEEE' : '#000000', // Đặt backgroundColor tùy thuộc vào colorScheme
+          },
           headerShown: false,
         }}
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileStack}
+        children={() => <ProfileStack colorScheme={colorScheme} />}
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" color={color} size={size} />
           ),
+          tabBarStyle: {
+            backgroundColor: colorScheme === 'light' ? '#EEEEEE' : '#000000', // Đặt backgroundColor tùy thuộc vào colorScheme
+          },
         }}
       />
       {/* <Tab.Screen

@@ -7,6 +7,7 @@ import {
   Alert,
   ScrollView,
   TouchableOpacity,
+  useColorScheme,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -32,12 +33,22 @@ import "firebase/firestore";
 import { auth, firebase, app, firebaseConfig } from "../../firebase";
 
 import UserController from "../../controller/UserController";
+import darkModel from "../styles/DarkModel";
 const db = firebase.firestore();
 
 const CommentSreen = ({ route, navigation }) => {
   const { postID } = route.params;
   const { comments } = route.params;
   const [comment, setComment] = useState("");
+
+  const colorScheme = useColorScheme();
+
+  const themeTextStyle = colorScheme === 'light' ? darkModel.lightThemeText : darkModel.darkThemeText;
+  const themeContainerStyle = colorScheme === 'light' ? darkModel.lightContainer : darkModel.darkContainer;
+
+  const gradientColors = colorScheme === 'dark' 
+    ? ['#434343', '#000000'] // Màu cho chế độ Dark
+    : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
 
   //tải cmt lên firebase
   const postComment = () => {
@@ -126,7 +137,7 @@ const CommentSreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={[{ flex: 1 },themeContainerStyle]}>
       <ScrollView>
         <View style={{ flex: 1 }}>
           {data.map((item) => (
@@ -174,18 +185,18 @@ const CommentSreen = ({ route, navigation }) => {
                           }
                         >
                           <UserInfoText>
-                            <UserName>{item.name}</UserName>
+                            <UserName style={themeTextStyle}>{item.name}</UserName>
                           </UserInfoText>
                         </TouchableOpacity>
 
-                        <MessageText>{item.comment}</MessageText>
+                        <MessageText style={themeTextStyle}>{item.comment}</MessageText>
                       </View>
                       {auth.currentUser.uid == item.uid || auth.currentUser?.email == 'admin@gmail.com' ? (
                         <UserImgWrapper>
                           <TouchableOpacity
                             onPress={() => deleteCommentByIndex(index)}
                           >
-                            <MessageText>Xóa bình luận</MessageText>
+                            <MessageText style={themeTextStyle}>Xóa bình luận</MessageText>
                           </TouchableOpacity>
                         </UserImgWrapper>
                       ) : (
@@ -227,8 +238,7 @@ const CommentSreen = ({ route, navigation }) => {
               borderRadius: 5,
               // borderTopLeftRadius: 30,
               // borderBottomLeftRadius: 30,
-              borderColor: "#fff",
-              borderColor: "black",
+              borderColor: (colorScheme === 'light'?'#242c40':'#DDDDDD'),
               paddingHorizontal: 20,
               paddingVertical: 10,
               fontSize: 16,
@@ -236,6 +246,7 @@ const CommentSreen = ({ route, navigation }) => {
               height: 50,
               borderWidth: 1,
               borderRadius: 100,
+              color:(colorScheme === 'light'?'#242c40':'#DDDDDD'),
             }}
             placeholder="Viết bình luận công khai..."
           />
@@ -247,7 +258,7 @@ const CommentSreen = ({ route, navigation }) => {
           </Text> */}
           <InteractionWrapper>
             <Interaction onPress={postComment}>
-              <Ionicons name="send-outline" size={30} />
+              <Ionicons name="send-outline" size={30} color={(colorScheme === 'light'?'#242c40':'#DDDDDD')}/>
             </Interaction>
           </InteractionWrapper>
         </View>

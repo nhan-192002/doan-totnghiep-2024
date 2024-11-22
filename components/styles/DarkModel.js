@@ -13,6 +13,13 @@ const darkModel = StyleSheet.create({
     darkThemeText: {
         color: '#DDDDDD',
     },
+    
+    lightIconText: {
+        color: '#DDDDDD',
+    },
+    darkTconText: {
+        color: '#242c40',
+    },
 })
 
 export default darkModel
