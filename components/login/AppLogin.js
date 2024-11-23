@@ -110,7 +110,7 @@ const AppLogin = ({ navigation }) => {
                 <TextInput
                   autoCapitalize="none"
                   placeholder="Tài Khoản"
-                  style={[styles.input, themeContainerStyle]}
+                  style={[styles.input, themeContainerStyle,themeTextStyle]}
                   value={Email}
                   onChangeText={(text) => setEmail(text)}
                 />
@@ -122,7 +122,7 @@ const AppLogin = ({ navigation }) => {
                   autoCapitalize="none"
                   secureTextEntry={!getPasswordVisible} // Đảo ngược điều kiện
                   placeholder="Mật Khẩu"
-                  style={[styles.input, themeContainerStyle]}
+                  style={[styles.input, themeContainerStyle,themeTextStyle]}
                 />
                 <TouchableOpacity
                   style={styles.imgVisible}

@@ -287,7 +287,7 @@ const AppRegister = ({ navigation }) => {
                 <TextInput
                   autoCapitalize="none"
                   placeholder="Họ và tên"
-                  style={[styles.input, themeContainerStyle]}
+                  style={[styles.input, themeContainerStyle, themeTextStyle]}
                   value={name}
                   onChangeText={(text) => setName(text)}
                 />
@@ -296,7 +296,7 @@ const AppRegister = ({ navigation }) => {
                 <TextInput
                   autoCapitalize="none"
                   placeholder="Tài Khoản"
-                  style={[styles.input, themeContainerStyle]}
+                  style={[styles.input, themeContainerStyle, themeTextStyle]}
                   value={Email}
                   onChangeText={(text) => setEmail(text)}
                 />
@@ -309,7 +309,7 @@ const AppRegister = ({ navigation }) => {
                   autoCapitalize="none"
                   secureTextEntry={getPasswordVisible ? false : true}
                   placeholder="Mật Khẩu"
-                  style={[styles.input, themeContainerStyle]}
+                  style={[styles.input, themeContainerStyle, themeTextStyle]}
                 />
                 <TouchableOpacity
                   style={styles.imgVisible}
@@ -340,7 +340,7 @@ const AppRegister = ({ navigation }) => {
                   autoCapitalize="none"
                   secureTextEntry={getPasswordVisible ? false : true}
                   placeholder="Nhập Lại Mật Khẩu"
-                  style={[styles.input, themeContainerStyle]}
+                  style={[styles.input, themeContainerStyle, themeTextStyle]}
                 />
                 <TouchableOpacity
                   style={styles.imgVisible}
