@@ -462,37 +462,81 @@ class IndexModel {
   };
 
   //upload bài viết
-  async uploadImagePosts(imageUri, text, userId) {
+  async uploadImagePosts(imageUri, text, userId, filtered_tags) {
     try {
       const response = await fetch(imageUri);
       const blob = await response.blob();
       const filename = imageUri.substring(imageUri.lastIndexOf("/") + 1);
       const ref = firebase.storage().ref().child(filename);
-
       await ref.put(blob);
       const downloadURL = await ref.getDownloadURL();
-
       const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+  
+      let tagsArray = [];
+      
+      if (Array.isArray(filtered_tags)) {
+        tagsArray = filtered_tags;
+      } else if (typeof filtered_tags === "object") {
+        tagsArray = Object.keys(filtered_tags);
+      } else if (filtered_tags instanceof Map) {
+        tagsArray = Array.from(filtered_tags.keys());
+      }
+  
       const data = {
         image: downloadURL,
         text: text,
         user: userId,
+        tags: tagsArray,
         time: timestamp,
         likes: [],
         comments: [],
         report: 0,
       };
-
+  
       const result = await firebase
         .firestore()
         .collection("MoreNews")
         .add(data);
+  
       return result.id;
     } catch (error) {
       console.error(error);
       throw error;
     }
   }
+  
+  // async uploadImagePosts(imageUri, text, userId, filtered_tags) {
+  //   try {
+  //     const response = await fetch(imageUri);
+  //     const blob = await response.blob();
+  //     const filename = imageUri.substring(imageUri.lastIndexOf("/") + 1);
+  //     const ref = firebase.storage().ref().child(filename);
+
+  //     await ref.put(blob);
+  //     const downloadURL = await ref.getDownloadURL();
+
+  //     const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+  //     const data = {
+  //       image: downloadURL,
+  //       text: text,
+  //       user: userId,
+  //       tags: filtered_tags,
+  //       time: timestamp,
+  //       likes: [],
+  //       comments: [],
+  //       report: 0,
+  //     };
+
+  //     const result = await firebase
+  //       .firestore()
+  //       .collection("MoreNews")
+  //       .add(data);
+  //     return result.id;
+  //   } catch (error) {
+  //     console.error(error);
+  //     throw error;
+  //   }
+  // }
   async uploadTextPosts(text, userId) {
     try {
       const timestamp = firebase.firestore.FieldValue.serverTimestamp();

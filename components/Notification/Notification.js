@@ -279,7 +279,7 @@ const Notification = ({ navigation }) => {
         )}
       />
       
-      <Text style={themeTextStyle}>Những người bạn có thể biết</Text>
+      {/* <Text style={themeTextStyle}>Những người bạn có thể biết</Text> */}
       <FlatList
         data={userDetails}
         keyExtractor={(item, index) => index.toString()}

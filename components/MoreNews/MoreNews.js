@@ -37,6 +37,8 @@ import "firebase/firestore";
 import UserController from "../../controller/UserController";
 import darkModel from "../styles/DarkModel";
 import { LinearGradient } from 'expo-linear-gradient';
+import axios from 'axios';
+import { SERVER_IMAGE, SERVER_IP, SERVER_PORT } from "../../config";
 
 const MoreNews = ({ navigation }) => {
   const [image, setImage] = useState(null);
@@ -53,36 +55,91 @@ const MoreNews = ({ navigation }) => {
     ? ['#434343', '#000000'] // Màu cho chế độ Dark
     : ['#EEEEEE', '#888888']; // Màu cho chế độ Light
 
-  const uploandfile = async () => {
+  // const uploandfile = async () => {
+  //   if (image?.uri != null) {
+  //     setUploading(true);
+  //     UserController.uploadImagePosts(image.uri, TextNew, auth.currentUser.uid)
+  //       .then(() => {
+  //         Keyboard.dismiss();
+  //         setImage(null);
+  //         setTextNew(null);
+  //         setUploading(false);
+  //         Alert.alert("Tải bài viết thành công");
+  //         navigation.navigate("Trang chủ");
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //       });
+  //   } else {
+  //     setUploading(true);
+  //     UserController.uploadTextPosts(TextNew, auth.currentUser.uid)
+  //       .then(() => {
+  //         Keyboard.dismiss();
+  //         setTextNew(null);
+  //         setUploading(false);
+  //         Alert.alert("Tải bài viết thành công");
+  //         navigation.navigate("Home");
+  //       })
+  //       .catch((error) => {
+  //         alert(error);
+  //       });
+  //   }
+  // };
+
+const uploandfile = async () => {
     if (image?.uri != null) {
       setUploading(true);
-      UserController.uploadImagePosts(image.uri, TextNew, auth.currentUser.uid)
-        .then(() => {
-          Keyboard.dismiss();
-          setImage(null);
-          setTextNew(null);
-          setUploading(false);
-          Alert.alert("Tải bài viết thành công");
-          navigation.navigate("Trang chủ");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+
+      const formData = new FormData();
+      formData.append('image', {
+        uri: image.uri,
+        name: 'photo.jpg',
+        type: 'image/jpeg',
+      });
+
+      try {
+        // Gửi ảnh qua API server Python để gắn tag
+        const response = await axios.post(`http://${SERVER_IP}:${SERVER_IMAGE}/process-image`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });        
+
+        const { all_tags, filtered_tags } = response.data;
+        console.log("All tags:", all_tags);
+        console.log("Filtered tags:", filtered_tags);
+
+        // Tiếp tục gọi API backend để lưu bài viết
+        await UserController.uploadImagePosts(image.uri, TextNew, auth.currentUser.uid, filtered_tags);
+
+        Keyboard.dismiss();
+        setImage(null);
+        setTextNew(null);
+        setUploading(false);
+        Alert.alert("Tải bài viết thành công");
+        navigation.navigate("Trang chủ");
+      } catch (error) {
+        console.log(error);
+        Alert.alert("Lỗi", "Không thể xử lý ảnh hoặc tải bài viết.");
+        setUploading(false);
+      }
     } else {
-      setUploading(true);
-      UserController.uploadTextPosts(TextNew, auth.currentUser.uid)
-        .then(() => {
-          Keyboard.dismiss();
-          setTextNew(null);
-          setUploading(false);
-          Alert.alert("Tải bài viết thành công");
-          navigation.navigate("Home");
-        })
-        .catch((error) => {
-          alert(error);
-        });
+      // Xử lý bài viết không có ảnh
+      try {
+        await UserController.uploadTextPosts(TextNew, auth.currentUser.uid);
+        Keyboard.dismiss();
+        setTextNew(null);
+        setUploading(false);
+        Alert.alert("Tải bài viết thành công");
+        navigation.navigate("Trang chủ");
+      } catch (error) {
+        console.log(error);
+        Alert.alert("Lỗi", "Không thể tải bài viết.");
+        setUploading(false);
+      }
     }
   };
+
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library

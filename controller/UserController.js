@@ -180,9 +180,9 @@ class UserController {
   };
 
   //upload bài viết
-  uploadImagePosts(imageUri, text, userId) {
+  uploadImagePosts(imageUri, text, userId, filtered_tags) {
     try {
-      return IndexModel.uploadImagePosts(imageUri, text, userId);
+      return IndexModel.uploadImagePosts(imageUri, text, userId, filtered_tags);
     } catch (error) {
       alert(error);
     }
