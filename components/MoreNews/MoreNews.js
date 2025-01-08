@@ -241,7 +241,7 @@ const uploandfile = async () => {
               editable
               multiline
               numberOfLines={4}
-              style={styles.textInput}
+              style={[styles.textInput,themeTextStyle]}
             />
           </View>
           {image && (

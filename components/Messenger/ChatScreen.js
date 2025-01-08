@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, ScrollView, Text, Button, StyleSheet, useColorScheme } from "react-native";
+import { View, ScrollView, Text, Button, StyleSheet, useColorScheme, KeyboardAvoidingView, Platform } from "react-native";
 import { Bubble, GiftedChat, Send, InputToolbar  } from "react-native-gifted-chat";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -169,6 +169,11 @@ const ChatScreen = ({ navigation, route }) => {
   };
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? -170 : 0} // Nâng cao thêm một chút
+    >
     <View style={[{flex:1, backgroundColor: themeContainerStyle}]}>
       <GiftedChat
         messages={messages}
@@ -184,7 +189,7 @@ const ChatScreen = ({ navigation, route }) => {
         renderInputToolbar={renderInputToolbar}
         scrollToBottom
       />
-    </View>
+    </View></KeyboardAvoidingView>
   );
 };
 export default ChatScreen;

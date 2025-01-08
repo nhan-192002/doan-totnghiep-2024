@@ -61,8 +61,20 @@ const MessageStack = ({ navigation,  colorScheme}) => (
       })}
     />
      <Stack.Screen
-      name="Gemini"
+      name="ChatBot"
       component={GeminiAi}
+      options={({ route }) => ({
+        title: route.params.userName,
+        headerBackTitleVisible: false,
+        headerStyle: {
+          shadowColor: "#fff",
+          elevation: 0,
+          backgroundColor:(colorScheme==='light'?'#EEEEEE':'#434343'),
+        },
+        tabBarStyle: {
+            backgroundColor: colorScheme === 'light' ? '#EEEEEE' : '#000000', // Đặt backgroundColor tùy thuộc vào colorScheme
+          },
+      })}
     />
   </Stack.Navigator>
 );

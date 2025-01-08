@@ -19,6 +19,8 @@ import AuthController from "../../controller/AuthController";
 import UserController from "../../controller/UserController";
 import { LinearGradient } from "expo-linear-gradient";
 import darkModel from "../styles/DarkModel";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+
 
 const UserPage = ({ navigation, route }) => {
   const [userId, setUserId] = useState(null);
@@ -137,6 +139,22 @@ const UserPage = ({ navigation, route }) => {
       setFollow
     );
   };
+  const resetPassword = async (email) => {
+    if (!email) {
+      Alert.alert("Lỗi", "Vui lòng nhập email.");
+      return;
+    }
+  
+    try {
+      await sendPasswordResetEmail(auth, email);
+      Alert.alert("Thành công", "Email đặt lại mật khẩu đã được gửi.");
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Lỗi", error.message);
+    }
+  };
+  
+  
 
   // const handleRemoveFromFollower = async () => {
   //   try {
@@ -242,6 +260,12 @@ const UserPage = ({ navigation, route }) => {
                       onPress={() => logout()}
                     >
                       <Text style={styles.userBtnTxt}>Đăng xuất</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.userBtn}
+                      onPress={() => resetPassword(userData.email)}
+                    >
+                      <Text style={styles.userBtnTxt}>Reset Password</Text>
                     </TouchableOpacity>
                   </>
                 )}

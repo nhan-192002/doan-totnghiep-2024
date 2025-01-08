@@ -139,13 +139,13 @@ useEffect(() => {
   console.log('data',filteredPosts);
 
   //hiện thị dữ liệu
-  // useEffect(() => {
-  //   UserController.startListening(setData);
+  useEffect(() => {
+    UserController.startListening(setData);
 
-  //   return () => {
-  //     UserController.stopListening();
-  //   };
-  // }, []);
+    return () => {
+      UserController.stopListening();
+    };
+  }, []);
 
 
   // Gọi hàm lưu bài viết vào Firestore khi posts thay đổi
@@ -193,6 +193,23 @@ useEffect(() => {
   return (
     <LinearGradient colors={gradientColors} style={{ justifyContent: 'center', alignItems: 'center',  }}>
       <View style={{ width: '95%' }}>
+      {auth.currentUser?.email == "admin@gmail.com" ?(
+        <FlatList
+          data={data}
+          renderItem={({ item }) => (
+            <PortCard
+              item={item}
+              onLike={onLike}
+              onComment={onComment}
+              onDelete={() => onPostDelete(item.id)}
+              onPress={() =>
+                navigation.navigate("HomeProfile", { userId: item.user })
+              }
+            />
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      ):(
         <FlatList
           data={filteredPosts}
           renderItem={({ item }) => (
@@ -208,6 +225,8 @@ useEffect(() => {
           )}
           keyExtractor={(item) => item.id}
         />
+      )}
+        
       </View>
     </LinearGradient>
   );

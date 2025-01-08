@@ -69,7 +69,7 @@ const Notification = ({ navigation }) => {
       );
       setSuggestedUsers(response.data.suggested_users);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 

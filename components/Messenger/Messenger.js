@@ -92,7 +92,7 @@ const Messenger = ({ navigation }) => {
           alignItems: "center",
         }}
         onPress={() =>
-          navigation.navigate("Gemini", {
+          navigation.navigate("ChatBot", {
             name: dataUserAI.name,
             image: dataUserAI.userImg,
           })
@@ -104,7 +104,7 @@ const Messenger = ({ navigation }) => {
           </UserImgWrapper>
           <TextSection>
             <UserInfoText>
-              <UserName style={themeTextStyle}>Gemini AI</UserName>
+              <UserName style={themeTextStyle}>ChatBot AI</UserName>
             </UserInfoText>
           </TextSection>
         </UserInfo>
